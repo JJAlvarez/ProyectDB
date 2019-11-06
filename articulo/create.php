@@ -22,7 +22,7 @@ $data = json_decode(file_get_contents("php://input"));
  
 // make sure data is not empty
 if(
-    !empty($data->id_s_c) && !empty($data->id_u) && !empty($data->plantilla) && !empty($data->text) && !empty($data->titulo)
+    !empty($data->id_s_c) && !empty($data->id_u) && !empty($data->plantilla) && !empty($data->text) && !empty($data->titulo) && !empty($data->header_image)
 ){
  
     // set articulo property values
@@ -31,6 +31,7 @@ if(
     $articulo->plantilla = $data->plantilla;
     $articulo->text = $data->text;
     $articulo->titulo = $data->titulo;
+    $articulo->header_image = $data->header_image;
  
     // create the articulo
     if($articulo->create()){
@@ -39,7 +40,7 @@ if(
         http_response_code(201);
  
         // tell the user
-        echo json_encode(array("mensaje" => "Articulo creado exitosamente.", "created" => true));
+        echo json_encode(array("mensaje" => "Articulo creado exitosamente.", "created" => true, "id_a" => $articulo->id_a));
     }
  
     // if unable to create the articulo, tell the user
