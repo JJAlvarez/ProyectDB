@@ -23,7 +23,7 @@ $articulo->id_a = isset($_GET['id']) ? $_GET['id'] : die();
 // read the details of articulo to be edited
 $articulo->readOne();
  
-if($articulo->nombre!=null){
+if($articulo->titulo!=null){
     // create array
     $articulo_arr = array(
         "id_a" =>  $articulo->id_a,
@@ -34,7 +34,12 @@ if($articulo->nombre!=null){
         "status" => $articulo->status,
         "text" => $articulo->text,
         "titulo" => $articulo->titulo,
-        "id_s_c" => $articulo->id_s_c
+        "id_s_c" => $articulo->id_s_c,
+        "nombre_sub_categoria" => $articulo->nombre_sub_categoria,
+        "nombre_categoria" => $articulo->nombre_categoria,
+        "id_c" => $articulo->id_c,
+        "nombre_autor" => $articulo->nombre_autor,
+        "header_image" => $articulo->header_image
     ); 
  
     // set response code - 200 OK
