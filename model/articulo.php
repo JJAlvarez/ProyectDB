@@ -16,6 +16,7 @@ class Articulo {
     public $id_s_c;
     public $plantilla;
     public $nombre_sub_categoria;
+    public $nombre_autor;
 
     public function __construct($db) {
         $this->conn = $db;
@@ -55,8 +56,10 @@ class Articulo {
     function create(){
     
         // query to insert record
-        $query = "INSERT INTO " . $this->table_name . " SET fecha_p=NOW(), id_s_c=:id_s_c, 
-            id_u=:id_u, plantilla=:plantilla, `reads`=0, status=1, `text`=:text, titulo=:titulo";
+        $query = "call create_article(:id_s_c, 
+            :id_u, :plantilla, :text, :titulo, :header_image, @id)";
+
+        $query2 = "SELECT @id as id";
     
         // prepare query
         $stmt = $this->conn->prepare($query);
@@ -67,6 +70,7 @@ class Articulo {
         $this->plantilla=htmlspecialchars(strip_tags($this->plantilla));
         $this->text=htmlspecialchars(strip_tags($this->text));
         $this->titulo=htmlspecialchars(strip_tags($this->titulo));
+        $this->header_image=htmlspecialchars(strip_tags($this->header_image));
     
         // bind values
         $stmt->bindParam(":id_s_c", $this->id_s_c);
@@ -74,10 +78,16 @@ class Articulo {
         $stmt->bindParam(":plantilla", $this->plantilla);
         $stmt->bindParam(":text", $this->text);
         $stmt->bindParam(":titulo", $this->titulo);
+        $stmt->bindParam(":header_image", $this->header_image);
     
         // execute query
         if($stmt->execute()){
-            return true;
+            $stmt = $this->conn->prepare($query2);
+            if ($stmt->execute()) {
+                $row = $stmt->fetch(PDO::FETCH_ASSOC);
+                $this->id_a = $row['id'];
+                return true;
+            }
         }
     
         return false;
@@ -88,14 +98,9 @@ class Articulo {
     function readOne(){
     
         // query to read single record
-        $query = "SELECT
-                    *
-                FROM
-                    " . $this->table_name . " a
-                WHERE
-                    a.id_a = ?
-                LIMIT
-                    0,1";
+        $query = "SELECT * FROM articles_view a 
+        INNER JOIN usuario u ON u.id_u = a.id_u
+        WHERE a.id_a = ? LIMIT 0,1";
     
         // prepare query statement
         $stmt = $this->conn->prepare( $query );
@@ -118,6 +123,12 @@ class Articulo {
         $this->status = $row['status'];
         $this->text = $row['text'];
         $this->titulo = $row['titulo'];
+        $this->id_c = $row['id_c'];
+        $this->nombre_categoria = $row['nombre_categoria'];
+        $this->header_image = $row['header_image'];
+        $this->nombre_categoria = $row['nombre_categoria'];
+        $this->nombre_sub_categoria = $row['nombre_sub_categoria'];
+        $this->nombre_autor = $row['nombre'] . " " . $row['apellido']; 
     }
 
     // update the categoria
