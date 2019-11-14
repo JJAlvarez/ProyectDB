@@ -40,7 +40,7 @@ class Articulo {
     function readByUser(){
     
         // select all query
-        $query = "SELECT * FROM articles_view WHERE id_u = :id;";
+        $query = "SELECT * FROM articles_view WHERE id_u = :id order by id_a asc;";
     
         // prepare query statement
         $stmt = $this->conn->prepare($query);
